@@ -10,7 +10,7 @@ if [ -v "SSH_CONNECTION" ]; then
 	# Unlike the recommendation in the linked SO post,
 	# we are not using docker and thus not using docker's special network.
 	# Instead, we use the IP of the host.
-	IP_ADDR=`ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n 1`
+	IP_ADDR=`ip address show | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n 1`
 	DISPLAY=`echo $DISPLAY | sed "s/^[^:]*\(.*\)/${IP_ADDR}\1/"`
 fi
 XAUTH=/tmp/.docker.xauth
@@ -19,10 +19,11 @@ xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f $XAUTH nmerge -
 # https://stackoverflow.com/questions/24112727/relative-paths-based-on-file-location-instead-of-current-working-directory
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 
+imagename="sst"
 if [ "$1" != "" ]; then
-    imagename=$1
+    profile=$1
 else
-    imagename="bluesky"
+    profile="default"
 fi
 
 podman run --pod acquisition \
@@ -40,4 +41,4 @@ podman run --pod acquisition \
        -e EPICS_CA_AUTO_ADDR_LIST=no \
        -e PYTHONPATH=/usr/local/share/ipython\
        $imagename \
-       ipython3 --ipython-dir=/usr/local/share/ipython
+       ipython3 --ipython-dir=/usr/local/share/ipython --profile=$profile

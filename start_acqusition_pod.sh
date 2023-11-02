@@ -2,7 +2,7 @@
 set -e
 set -o xtrace
 
-IP_ADDR=`ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n 1`
+IP_ADDR=`ip address show | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n 1`
 
 ###########################################################################################
 # Main acquisition services with adaptive etc
@@ -13,13 +13,13 @@ podman pod create -n acquisition  -p 9092:9092/tcp -p 60610:9090/tcp
 # just to get minimal IOC running
 podman run -dt --pod acquisition --rm caproto
 
-podman run -dt --pod acquisition --rm caproto python3 -m caproto.ioc_examples.mini_beamline -v
-podman run -dt --pod acquisition --rm caproto python3 -m caproto.ioc_examples.random_walk -v
-podman run -dt --pod acquisition --rm caproto python3 -m caproto.ioc_examples.random_walk -v  --prefix="random_walk:horiz-"
-podman run -dt --pod acquisition --rm caproto python3 -m caproto.ioc_examples.random_walk -v  --prefix="random_walk:vert-"
-podman run -dt --pod acquisition --rm caproto python3 -m caproto.ioc_examples.simple -v
-podman run -dt --pod acquisition --rm caproto python3 -m caproto.ioc_examples.thermo_sim -v
-podman run -dt --pod acquisition --rm caproto python3 -m caproto.ioc_examples.trigger_with_pc -v
+#podman run -dt --pod acquisition --rm caproto python3 -m caproto.ioc_examples.mini_beamline -v
+#podman run -dt --pod acquisition --rm caproto python3 -m caproto.ioc_examples.random_walk -v
+#podman run -dt --pod acquisition --rm caproto python3 -m caproto.ioc_examples.random_walk -v  --prefix="random_walk:horiz-"
+#podman run -dt --pod acquisition --rm caproto python3 -m caproto.ioc_examples.random_walk -v  --prefix="random_walk:vert-"
+#podman run -dt --pod acquisition --rm caproto python3 -m caproto.ioc_examples.simple -v
+#podman run -dt --pod acquisition --rm caproto python3 -m caproto.ioc_examples.thermo_sim -v
+#podman run -dt --pod acquisition --rm caproto python3 -m caproto.ioc_examples.trigger_with_pc -v
 
 # start up a mongo
 podman run -dt --pod acquisition --rm docker.io/library/mongo:latest
@@ -67,39 +67,39 @@ podman run --pod acquisition\
 podman run -dt --pod acquisition  --rm docker.io/redis
 
 # start up queueserver manager
-podman run --pod acquisition \
-       -td --rm \
-       --name=acq_queue_manager \
-       bluesky \
-       start-re-manager --kafka_topic=mad.bluesky.documents --kafka_server=localhost:29092
+#podman run --pod acquisition \
+#       -td --rm \
+#       --name=acq_queue_manager \
+#       bluesky \
+#       start-re-manager --kafka_topic=mad.bluesky.documents --kafka_server=localhost:29092
 
 # start up queueserver webserver
-podman run --pod acquisition \
-       -td --rm \
-       --name=acq_queue_server \
-       bluesky \
-       uvicorn bluesky_queueserver.server.server:app --host localhost --port 8081
+#podman run --pod acquisition \
+#       -td --rm \
+#       --name=acq_queue_server \
+#       bluesky \
+#       uvicorn bluesky_queueserver.server.server:app --host localhost --port 8081
 
 
-CLIENT_DIR=../bluesky-webclient
-
-if [ ! -d $CLIENT_DIR ]; then
-    NGINX_CONTAINER=bluesky-webclient
-else
-    pushd $CLIENT_DIR
-    podman run --rm -v .:/src -w /src node:15.0.1-buster bash -c 'npm install && npm run build'
-    popd
-    MOUNT="-v $CLIENT_DIR/build:/var/www/html:ro"
-    NGINX_CONTAINER=docker.io/nginx
-fi
-
+#CLIENT_DIR=../bluesky-webclient
+#
+#if [ ! -d $CLIENT_DIR ]; then
+#    NGINX_CONTAINER=bluesky-webclient
+#else
+#    pushd $CLIENT_DIR
+#    podman run --rm -v .:/src -w /src node:15.0.1-buster bash -c 'npm install && npm run build'
+#    popd
+#    MOUNT="-v $CLIENT_DIR/build:/var/www/html:ro"
+#    NGINX_CONTAINER=docker.io/nginx
+#fi
+#
 # start nginx
-podman run --pod acquisition \
-       -v ./bluesky_config/nginx/acqusition.conf:/etc/nginx/nginx.conf:ro \
-       $MOUNT \
-       --name=acq_reverse_proxy \
-       -dt --rm \
-       $NGINX_CONTAINER
+#podman run --pod acquisition \
+#       -v ./bluesky_config/nginx/acqusition.conf:/etc/nginx/nginx.conf:ro \
+#       $MOUNT \
+#       --name=acq_reverse_proxy \
+#       -dt --rm \
+#       $NGINX_CONTAINER
+#
 
-
-bash start_ad.sh MADSIM1
+#bash start_ad.sh MADSIM1

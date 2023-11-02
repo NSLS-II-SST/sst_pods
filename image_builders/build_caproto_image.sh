@@ -4,10 +4,9 @@ set -e
 set -o xtrace
 
 
-container=$(buildah from fedora)
-buildah run $container -- dnf -y install python3 ipython3 python3-pip python3-numpy python3-netifaces
-buildah run $container -- pip3 install caproto[standard]
+container=$(buildah from sst)
+buildah run $container -- pip3 install git+https://github.com/NSLS-II-SST/sim_beamline.git@master
 # this is the thing you want to change to spawn your IOC
-buildah config --cmd "python3 -m caproto.ioc_examples.simple --list-pvs" $container
+buildah config --cmd "simline --list-pvs" $container
 buildah unmount $container
 buildah commit $container caproto

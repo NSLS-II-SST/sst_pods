@@ -2,7 +2,7 @@
 set -e
 set -o xtrace
 
-IP_ADDR=`ifconfig | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p'`
+IP_ADDR=`ip address show | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3}[0-9]*).*/\2/p' | head -n 1`
 
 ########################################################################################################################
 # Dataaccess pod.
@@ -31,27 +31,28 @@ podman run --pod databroker \
        databroker-server \
        uvicorn --port 8081 databroker_server.main:app
 
-CLIENT_DIR=../databroker-client
-
-if [ ! -d $CLIENT_DIR ]; then
-    NGINX_CONTAINER=databroker-webclient
-else
-    pushd $CLIENT_DIR
-    podman run --rm -v .:/src -w /src node:15.0.1-buster bash -c 'npm install && npm run build'
-    popd
-    MOUNT="-v $CLIENT_DIR/build:/var/www/html:ro"
-    NGINX_CONTAINER=nginx
-fi
+#CLIENT_DIR=../databroker-client
+#
+#if [ ! -d $CLIENT_DIR ]; then
+#    NGINX_CONTAINER=databroker-webclient
+#else
+#    pushd $CLIENT_DIR
+#    podman run --rm -v .:/src -w /src node:15.0.1-buster bash -c 'npm install && npm run build'
+#    popd
+#    MOUNT="-v $CLIENT_DIR/build:/var/www/html:ro"
+#    NGINX_CONTAINER=nginx
+#fi
 
 
 # start nginx
-podman run --pod databroker \
-       -v ./bluesky_config/nginx/databroker.conf:/etc/nginx/nginx.conf:ro \
-       $MOUNT \
-       --name=db_reverse_proxy \
-       -dt --rm \
-       $NGINX_CONTAINER
+#podman run --pod databroker \
+#       -v ./bluesky_config/nginx/databroker.conf:/etc/nginx/nginx.conf:ro \
+#       $MOUNT \
+#       --name=db_reverse_proxy \
+#       -dt --rm \
+#       $NGINX_CONTAINER
 
-podman run -dt --pod databroker --rm \
-    -v ./bluesky_config/databroker:/usr/local/share/intake \
-    jupyter
+#podman run -dt --pod databroker --rm \
+#    -v ./bluesky_config/databroker:/usr/local/share/intake \
+#    jupyter
+#
