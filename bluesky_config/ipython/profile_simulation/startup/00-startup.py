@@ -1,4 +1,4 @@
-#import nslsii
+import nslsii
 from functools import partial
 import ucal
 ucal.STATION_NAME = "sst_sim"
@@ -8,9 +8,8 @@ from bluesky.callbacks import LiveTable
 import msgpack
 import msgpack_numpy as mpn
 from bluesky_kafka import Publisher as kafkaPublisher
-import databroker
 
-db = databroker.catalog['MAD']
+nslsii.configure_base(get_ipython().user_ns, "test", publish_documents_with_kafka=False)
 
 kafka_publisher = kafkaPublisher(
     topic="mad.bluesky.documents",
@@ -27,9 +26,10 @@ kafka_publisher = kafkaPublisher(
 
 
 ucal_sd.baseline.append(eslit)
-bec = BestEffortCallback()
+#bec = BestEffortCallback()
 
-RE.subscribe(bec)
+#RE.subscribe(bec)
+#RE.subscribe(db.insert)
 RE.subscribe(kafka_publisher)
 
 RE._call_returns_result = False

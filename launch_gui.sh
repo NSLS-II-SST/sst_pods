@@ -19,26 +19,20 @@ xauth nlist $DISPLAY | sed -e 's/^..../ffff/' | xauth -f $XAUTH nmerge -
 # https://stackoverflow.com/questions/24112727/relative-paths-based-on-file-location-instead-of-current-working-directory
 parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 
-imagename="sst"
-if [ "$1" != "" ]; then
-    profile=$1
-else
-    profile="default"
-fi
-
 podman run --pod acquisition \
-       -ti  --rm \
-       -v /tmp/.X11-unix/:/tmp/.X11-unix/ \
+       -dt -v /tmp/.X11-unix/:/tmp/.X11-unix/ \
        -e DISPLAY \
        -v $XAUTH:$XAUTH \
        -e XAUTHORITY=$XAUTH \
-       -v `pwd`:'/app' -w '/app' \
-       -v $parent_path/bluesky_config/ipython:/usr/local/share/ipython \
-       -v $parent_path/bluesky_config/databroker:/usr/local/share/intake \
-       -v $parent_path/bluesky_config/tiled/profiles:/etc/tiled/profiles \
        -e XDG_RUNTIME_DIR=/tmp/runtime-$USER \
        -e EPICS_CA_ADDR_LIST=10.0.2.255 \
        -e EPICS_CA_AUTO_ADDR_LIST=no \
-       -e PYTHONPATH=/usr/local/share/ipython\
-       $imagename \
-       ipython3 --ipython-dir=/usr/local/share/ipython --profile=$profile
+       --name qs-gui \
+       sst-gui sst-gui --config /usr/local/src/sst_gui/sst_gui/test_config.yaml
+
+    #    -v `pwd`:'/app' -w '/app' \
+    #    -v /home/jamie/work/visualization/sst_gui:/usr/local/sst_gui \
+    #    -v $parent_path/bluesky_config/ipython:/usr/local/share/ipython \
+    #    -v $parent_path/bluesky_config/tiled/profiles:/etc/tiled/profiles \
+    #    -v /home/jamie/work/nsls-ii-sst/ucal/ucal:/home/jamie/work/nsls-ii-sst/ucal/ucal \
+    #    -e PYTHONPATH=/usr/local/share/ipython\
