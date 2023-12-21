@@ -86,4 +86,4 @@ podman run --pod acquisition \
        -e EPICS_CA_ADDR_LIST=10.0.2.255 \
        -e EPICS_CA_AUTO_ADDR_LIST=no \
        --name qs-gui \
-       ghcr.io/nsls-ii-sst/sst-gui:latest sst-gui --config /usr/local/src/sst_gui/sst_gui/test_config.yaml
+       ghcr.io/nsls-ii-sst/sst_gui:latest sst-gui --config /usr/local/src/sst_gui/sst_gui/test_config.yaml
