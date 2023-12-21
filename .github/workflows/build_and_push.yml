@@ -1,0 +1,41 @@
+name: Build and Push Container Image
+
+on:
+  push:
+    tags: ['v*']
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Get the latest tag
+      id: get_tag
+      run: echo "LATEST_TAG=$(git describe --tags `git rev-list --tags --max-count=1`)" >> "$GITHUB_ENV"
+
+    - name: Run build script
+      run: |
+        bash image_builders/build_conda_image.sh
+        bash image_builders/build_bluesky_image.sh
+        bash image_builders/build_sst_image.sh
+
+    - name: Push image
+      run: |
+        IMAGE_ID=ghcr.io/NSLS-II-SST
+        # Make sure IMAGE_ID is lowercase for buildah
+        IMAGE_ID=$(echo $IMAGE_ID | tr '[A-Z]' '[a-z]')
+        echo $IMAGE_ID
+        echo "buildah push sst:latest $IMAGE_ID/sst:latest"
+        buildah push --creds ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} sst:latest $IMAGE_ID/sst:latest
+        echo "buildah push sst:latest $IMAGE_ID/sst:$LATEST_TAG"
+        buildah push sst:latest $IMAGE_ID/sst:$LATEST_TAG
+        echo "buildah push bluesky:latest $IMAGE_ID/bluesky:latest"
+        buildah push --creds ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} bluesky:latest $IMAGE_ID/bluesky:latest
+        echo "buildah push bluesky:latest $IMAGE_ID/bluesky:$LATEST_TAG"
+        buildah push bluesky:latest $IMAGE_ID/bluesky:$LATEST_TAG
