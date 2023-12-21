@@ -34,8 +34,8 @@ jobs:
         echo "buildah push sst:latest $IMAGE_ID/sst:latest"
         buildah push --creds ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} sst:latest $IMAGE_ID/sst:latest
         echo "buildah push sst:latest $IMAGE_ID/sst:$LATEST_TAG"
-        buildah push sst:latest $IMAGE_ID/sst:$LATEST_TAG
+        buildah push --creds ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} sst:latest $IMAGE_ID/sst:$LATEST_TAG
         echo "buildah push bluesky:latest $IMAGE_ID/bluesky:latest"
         buildah push --creds ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} bluesky:latest $IMAGE_ID/bluesky:latest
         echo "buildah push bluesky:latest $IMAGE_ID/bluesky:$LATEST_TAG"
-        buildah push bluesky:latest $IMAGE_ID/bluesky:$LATEST_TAG
+        buildah push --creds ${{ github.actor }}:${{ secrets.GITHUB_TOKEN }} bluesky:latest $IMAGE_ID/bluesky:$LATEST_TAG
