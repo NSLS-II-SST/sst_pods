@@ -1,0 +1,149 @@
+controllers:
+  adr:
+    _target_: sst_base.sim.DummyObject
+    prefix: 'SIM_SST:adr'
+    name: 'adr'
+detectors:
+  _default:
+    _target_: sst_base.detectors.scalar.ADCBuffer
+  i0:
+    prefix: "SIM_SST:i0:"
+    name: "ucal_i0up"
+    _extra_:
+      sets:
+        "default": "normalization"
+        "transmission": "normalization"
+      threshold: 0.1
+  i1:
+    prefix: "SIM_SST:i1:"
+    name: "ucal_i1"
+    _extra_:
+      sets:
+        "default": "auxiliary"
+        "transmission": "primary"
+      threshold: 0.1
+  ref:
+    prefix: "SIM_SST:ref:"
+    name: "ucal_ref"
+    _extra_: 
+      sets:
+        "default": "reference"
+        "transmission": "reference"
+      threshold: 0.1
+  sc:
+    prefix: "SIM_SST:sc:"
+    name: "ucal_sc"
+    _extra_:
+      sets:
+        "default": "primary"
+      threshold: 0.1
+  tes:
+    _target_: sst_base.sim.DummyObject
+    prefix: "tes"
+    name: "tes"
+    address: "10.66.48.41"
+    path: "/nsls2/data/sst/legacy/ucal/raw/%Y/%m/%2d"
+    port: 4000
+    _extra_:
+      sets:
+        "default": "primary"
+        "transmission": "auxiliary"
+energy:
+  en:
+    _target_: ucal_sim.energy.NewEnPos
+    prefix: "SIM_SST:energy:"
+    name: "en"
+gatevalves:
+  _default:
+    # _target_: sst_base.shutters.EPS_Shutter
+    _target_: sst_base.sim.DummyObject
+    kind: hinted
+    shutter_type: GV
+    openval: 0
+    closeval: 1
+  gv26:
+    prefix: "XF:07IDB-VA:2{Mir:M3C-GV:1}"
+    name: "Post Shutter Gate Valve"
+    openval: 1
+    closeval: 0
+  gv27:
+    prefix: "XF:07IDB-VA:3{Slt:C-GV:1}"
+    name: "Upstream Gate Valve"
+    openval: 1
+    closeval: 0
+  gv28:
+    prefix: "XF:07IDB-VA:2{BT:1-GV:1}"
+    name: "Downstream Gate Valve"
+    openval: 1
+    closeval: 0
+mirrors:
+  _default:
+    #_target_: sst_base.mirrors.FMBHexapodMirror
+    _target_: sst_base.sim.DummyObject
+    kind: hinted
+  mir4:
+    prefix: "XF:07ID2-OP{Mir:M4CD"
+    name: "SST 1 Mirror 4 fmb"
+  mir3:
+    prefix: "XF:07ID1-OP{Mir:M3ABC"
+    name: "SST 1 Mirror 3 fmb"
+  mir1:
+    prefix: "XF:07IDA-OP{Mir:M1"
+    name: "SST 1 Mirror 1 fmb"
+motors:
+  _default:
+    _target_: sst_base.motors.PrettyMotor
+    kind: hinted
+  Exit_Slit:
+    prefix: "SIM_SST:eslit:"
+    name: "Exit Slit of Mono Vertical Gap"
+  i0upAu:
+    prefix: "SIM_SST:i0upAu:"
+    name: "i0upAu"
+  tesz:
+    prefix: "SIM_SST:tesz:"
+    name: "tesz"
+manipulators:
+  manipulator:
+    _target_: sst_funcs.manipulators.ManipulatorBuilder
+    prefix: "SIM_SST:manipulator:"
+    name: "manip"
+  multimesh:
+    _target_: sst_funcs.manipulators.MultiMeshBuilder
+    prefix: "SIM_SST:multimesh:"
+    name: "i0upmultimesh"
+shutters:
+  _default:
+    _target_: sst_base.shutters.EPS_Shutter
+    shutter_type: PH
+    openval: 0
+    closeval: 1
+  psh1:
+    prefix: "SIM_SST:psh1:"
+    name: "Front-End Shutter"
+    shutter_type: FE
+  psh4:
+    prefix: "SIM_SST:psh4:"
+    name: "Hutch Photon Shutter"
+  psh10:
+    prefix: "SIM_SST:psh10:"
+    name: "Upstream Photon Shutter"
+    _extra_: {default: true}
+  psh7:
+    prefix: "SIM_SST:psh7:"
+    name: "Downstream Photon Shutter"
+signals:
+  _default:
+    _target_: ophyd.EpicsSignalRO
+    kind: "normal"
+  ring_current:
+    prefix: "SIM_SST:current"
+    name: "NSLS-II Ring Current"
+  ring_status:
+    prefix: "SIM_SST:status"
+    name: "NSLS-II Status"
+  sst_control: 
+    _target_: ophyd.EpicsSignal
+    prefix: "SIM_SST:Endstn-Sel"
+    name: "Endstation in Control"
+    string: True

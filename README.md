@@ -32,3 +32,5 @@ cd /path/to/sst-pods
 This will initiate the download of all required containers from ghcr.io (if not already present locally), and start the simulation by running all the images in a networked pod via Podman.
 
 Upon successful execution, you should see a GUI pop up, with the simulation running in the background, emulating the operations of the "ucal" endstation of the SST-I beamline at NSLS-II.
+
+To run the simulation, you must hit "Connect" in the Monitor Queue tab, and then "Open Environment" in the Edit and Control Queue tab. It is also helpful to load a samples file, which is currently located in "/usr/local/share/ipython/profile_simulation/startup"
