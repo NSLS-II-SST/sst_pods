@@ -38,12 +38,9 @@ detectors:
         "default": "primary"
       threshold: 0.1
   tes:
-    _target_: sst_base.sim.DummyObject
-    prefix: "tes"
-    name: "tes"
-    address: "10.66.48.41"
-    path: "/nsls2/data/sst/legacy/ucal/raw/%Y/%m/%2d"
-    port: 4000
+    _target_: sst_base.detectors.mca.EpicsMCABase
+    prefix: "SIM_SST:tesmca:"
+    name: "tes_mca"
     _extra_:
       sets:
         "default": "primary"
@@ -53,6 +50,7 @@ energy:
     _target_: ucal_sim.energy.NewEnPos
     prefix: "SIM_SST:energy:"
     name: "en"
+    long_name: "Energy Object"
 gatevalves:
   _default:
     # _target_: sst_base.shutters.EPS_Shutter
@@ -84,9 +82,11 @@ mirrors:
   mir4:
     prefix: "XF:07ID2-OP{Mir:M4CD"
     name: "SST 1 Mirror 4 fmb"
+    _baseline_: true
   mir3:
     prefix: "XF:07ID1-OP{Mir:M3ABC"
     name: "SST 1 Mirror 3 fmb"
+    _baseline_: true
   mir1:
     prefix: "XF:07IDA-OP{Mir:M1"
     name: "SST 1 Mirror 1 fmb"
@@ -97,12 +97,15 @@ motors:
   Exit_Slit:
     prefix: "SIM_SST:eslit:"
     name: "Exit Slit of Mono Vertical Gap"
+    _baseline_: true
   i0upAu:
     prefix: "SIM_SST:i0upAu:"
     name: "i0upAu"
+    _baseline_: true
   tesz:
     prefix: "SIM_SST:tesz:"
     name: "tesz"
+    _baseline_: true
 manipulators:
   manipulator:
     _target_: sst_funcs.manipulators.ManipulatorBuilder
@@ -112,6 +115,7 @@ manipulators:
     _target_: sst_funcs.manipulators.MultiMeshBuilder
     prefix: "SIM_SST:multimesh:"
     name: "i0upmultimesh"
+    _baseline_: true
 shutters:
   _default:
     _target_: sst_base.shutters.EPS_Shutter
@@ -127,7 +131,8 @@ shutters:
     name: "Hutch Photon Shutter"
   psh10:
     prefix: "SIM_SST:psh10:"
-    name: "Upstream Photon Shutter"
+    name: "psh10"
+    long_name: "Upstream Photon Shutter"
     _extra_: {default: true}
   psh7:
     prefix: "SIM_SST:psh7:"
@@ -138,10 +143,12 @@ signals:
     kind: "normal"
   ring_current:
     prefix: "SIM_SST:current"
-    name: "NSLS-II Ring Current"
+    name: "ring_current"
+    long_name: "NSLS-II Ring Current"
   ring_status:
     prefix: "SIM_SST:status"
-    name: "NSLS-II Status"
+    name: "ring_status"
+    long_name: "NSLS-II Status"
   sst_control: 
     _target_: ophyd.EpicsSignal
     prefix: "SIM_SST:Endstn-Sel"

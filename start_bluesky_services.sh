@@ -7,12 +7,12 @@ IP_ADDR=`ip address show | sed -En 's/127.0.0.1//;s/.*inet (addr:)?(([0-9]*\.){3
 podman pod create -n acquisition  -p 9092:9092/tcp \
        -p 60610:9090/tcp -p 8000:8000 -p 60615:60615 -p 60625:60625
 # Caproto Simulation IOC collection
-podman run -dt --pod acquisition --rm ghcr.io/nsls-ii-sst/sim_beamline:latest
+#podman run -dt --pod acquisition --name simline --rm sim_beamline:latest
 
 # start up a mongo
 podman run -dt --pod acquisition --rm docker.io/library/mongo:latest
 # start up a zmq proxy
-podman run --pod acquisition -dt --rm  ghcr.io/nsls-ii-sst/bluesky bluesky-0MQ-proxy 4567 5678
+podman run --pod acquisition -dt --rm  bluesky bluesky-0MQ-proxy 4567 5678
 # set up kafka + zookeeper
 podman run --pod acquisition \
        -dt --rm \
@@ -46,11 +46,3 @@ podman run --pod acquisition \
        -v `pwd`/bluesky_config/tiled/config:'/etc/tiled/config' \
        -e TILED_CONFIG='/etc/tiled/config' \
        ghcr.io/bluesky/databroker:latest tiled serve config --host 0.0.0.0
-
-podman run --pod acquisition \
-       -it --rm \
-       --name=bsui \
-       -v `pwd`/bluesky_config/ipython:/usr/local/share/ipython \
-       -v `pwd`/bluesky_config/tiled/profiles:/etc/tiled/profiles \
-       ghcr.io/nsls-ii-sst/sst:latest \
-       bash
