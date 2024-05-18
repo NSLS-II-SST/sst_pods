@@ -1,0 +1,33 @@
+[gui.tabs]
+include = ["sst-gui-queue", "sst-gui-monitor", "sst-gui-motors", "sst-gui-plans", "sst-gui-samples", "sst-gui-console", "kafka-table-tab"]
+
+[models.beamline]
+primary_energy = "en"
+primary_manipulator = "manipulator"
+loader = "sst_funcs.qt.models.beamline.SSTBeamlineModel"
+
+[devices]
+psh1 = { visible = false }
+psh4 = { visible = false }
+Exit_Slit = { label = "Exit Slit" }
+en = {"_role" = "energy"}
+
+
+[loaders]
+"NewEnPos" = "ucal.qt.models.energy.EnergyModel"
+"I400SingleCh" = "sst_gui.models.ScalarModel"
+"PrettyMotorFMBO" = "sst_gui.models.MotorModel"
+"FMBHexapodMirror" = "sst_gui.models.ManipulatorModel"
+"EpicsSignalRO" = "sst_gui.models.PVModel"
+"EpicsSignal" = "sst_gui.models.PVModel"
+"ShutterSet" = "sst_gui.models.GVModel"
+"EPS_Shutter" = "sst_gui.models.GVModel"
+"ManipulatorBuilder" = "sst_gui.models.ManipulatorModel"
+"ADCBuffer" = "sst_gui.models.ScalarModel"
+"PrettyMotor" = "sst_gui.models.MotorModel"
+"StandardProsilicaV33" = "sst_gui.models.PVModel"
+"MultiMeshBuilder" = "sst_gui.models.ManipulatorModel"
+
+[kafka]
+config_file = "/etc/bluesky/kafka.yml"
+bl_acronym = "mad"

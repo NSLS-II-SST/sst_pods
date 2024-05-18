@@ -20,6 +20,8 @@ parent_path=$( cd "$(dirname "${BASH_SOURCE[0]}")" ; pwd -P )
 
 LOCAL_DEV_PATH=$HOME/work/nsls-ii-sst
 CONTAINER_DEV_PATH=/usr/local/src/nsls-ii-sst
+LOCAL_NBS_PATH=$HOME/work/xraygui
+CONTAINER_NBS_PATH=/usr/local/src/xraygui
 
 podman run --pod acquisition \
        -dt -v /tmp/.X11-unix/:/tmp/.X11-unix/ \
@@ -28,6 +30,7 @@ podman run --pod acquisition \
        -v `pwd`/bluesky_config/bluesky:/etc/bluesky \
        -v `pwd`/bluesky_config/ipython:/usr/local/share/ipython \
        -v $LOCAL_DEV_PATH:$CONTAINER_DEV_PATH \
+       -v $LOCAL_NBS_PATH:$CONTAINER_NBS_PATH \
        -e IPYTHONDIR='/usr/local/share/ipython' \
        -e XAUTHORITY=$XAUTH \
        -e XDG_RUNTIME_DIR=/tmp/runtime-$USER \
@@ -36,10 +39,9 @@ podman run --pod acquisition \
        --name qs-gui \
        sst_gui_dev:latest bash
 
+podman exec -t -w /usr/local/bin qs-gui bash run_dev.sh
 podman exec -t -w $CONTAINER_DEV_PATH/sst_funcs qs-gui pip3 install -e .
 podman exec -t -w $CONTAINER_DEV_PATH/sst_base qs-gui pip3 install -e .
 podman exec -t -w $CONTAINER_DEV_PATH/ucal qs-gui pip3 install -e .
 podman exec -t -w $CONTAINER_DEV_PATH/ucal_sim qs-gui pip3 install -e .
-podman exec -t -w $CONTAINER_DEV_PATH/kafka_table qs-gui pip3 install -e .
-podman exec -t -w $CONTAINER_DEV_PATH/sst_gui/src qs-gui pip3 install -e .
 podman exec -t qs-gui sst-gui --profile simulation
